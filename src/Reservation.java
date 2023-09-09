@@ -1,38 +1,115 @@
+import jdk.jshell.Snippet;
+
 import java.time.LocalDate;
 
 public abstract class Reservation implements Cloneable {
 
-    public String accountNumber;
-    public String reservationNumber;
-    public Address physicalAddress;
-    public Address mailingAddress;
-    public LocalDate startDate;
-    public int stayDuration;
-    public int numberOfBeds;
-    public int numberOfBedrooms;
-    public float numberOfBathrooms;
-    public int lodgingSize;
-    public enum status { Draft, Completed, Canceled}
-    public status currentStatus;
+    private String accountNumber;
+    private String reservationNumber;
+    private Address physicalAddress;
+    private Address mailingAddress;
+    private LocalDate startDate;
+    private int stayDuration;
+    private int numberOfBeds;
+    private int numberOfBedrooms;
+    private Float numberOfBathrooms;
+    private int lodgingSize;
+    private enum status { Draft, Completed, Canceled}
+    private status currentStatus;
 
     public Reservation(){}
 
     public Reservation(String accountNumber, String reservationNumber, Address physicalAddress, Address mailingAddress,
                        LocalDate startDate, int stayDuration, int numberOfBeds, int numberOfBedrooms,
                        float numberOfBathrooms, int lodgingSize){
-//        this.accountNumber = accountNumber;
-//        this.reservationNumber = reservationNumber;
-//        this.physicalAddress = physicalAddress;
-//        this.mailingAddress = mailingAddress;
-//        this.startDate = startDate;
-//        this.stayDuration = stayDuration;
-//        this.numberOfBeds = numberOfBeds;
-//        this.numberOfBedrooms = numberOfBedrooms;
-//        this.numberOfBathrooms = numberOfBathrooms;
-//        this.lodgingSize = lodgingSize;
-//        this.currentStatus = status.Draft;
+        this.accountNumber = accountNumber;
+        this.reservationNumber = reservationNumber;
+        this.physicalAddress = physicalAddress;
+        this.mailingAddress = mailingAddress;
+        this.startDate = startDate;
+        this.stayDuration = stayDuration;
+        this.numberOfBeds = numberOfBeds;
+        this.numberOfBedrooms = numberOfBedrooms;
+        this.numberOfBathrooms = numberOfBathrooms;
+        this.lodgingSize = lodgingSize;
+        this.currentStatus = status.Draft;
 
     }
+    public void setPhysicalAddress(Address newAddress){
+        this.physicalAddress = newAddress;
+    }
+
+    public void setMailingAddress(Address newAddress){
+        this.mailingAddress= newAddress;
+    }
+
+    public void setStartDate(LocalDate newStartDate){
+        this.startDate = newStartDate;
+    }
+
+    public void setStayDuration(int newStayDuration) {
+        this.stayDuration = newStayDuration;
+    }
+
+    public void setNumberOfBeds(int newNumberOfBeds) {
+        this.numberOfBeds = newNumberOfBeds;
+    }
+
+    public void setNumberOfBedsrooms(int newNumberOfBedsrooms) {
+        this.numberOfBedrooms = newNumberOfBedsrooms;
+    }
+
+    public void setNumberOfBathrooms(float newNumberOfBathrooms) {
+        this.numberOfBathrooms = newNumberOfBathrooms;
+    }
+
+    public void setLodgingSize(int newLodgingSize) {
+        this.lodgingSize = newLodgingSize;
+    }
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+
+    public String getReservationNumber() {
+        return reservationNumber;
+    }
+
+    public Address getPhysicalAddress() {
+        return physicalAddress;
+    }
+
+    public Address getMailingAddress() {
+        return mailingAddress;
+    }
+
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public int getStayDuration() {
+        return stayDuration;
+    }
+
+    public int getNumberOfBeds() {
+        return numberOfBeds;
+    }
+
+    public int getNumberOfBedrooms() {
+        return numberOfBedrooms;
+    }
+
+    public float getNumberOfBathrooms() {
+        return numberOfBathrooms;
+    }
+
+    public int getLodgingSize() {
+        return lodgingSize;
+    }
+
+    public status getCurrentStatus() {
+        return currentStatus;
+    }
+
 
    //returns a double representing a Reservation's cost per night
     public double pricePerNight() {
@@ -74,7 +151,7 @@ public abstract class Reservation implements Cloneable {
     @Override
     public Reservation clone(){
         //return super.clone();
-    return null;
+        return null;
     }
     //provide UI with ability to output data to the screen
     public String toString(){return null;}

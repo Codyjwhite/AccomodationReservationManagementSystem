@@ -1,6 +1,6 @@
 public class HouseReservation extends Reservation {
 
-    public int numOfFloors;
+    private int numOfFloors;
 
     public HouseReservation(){
 
