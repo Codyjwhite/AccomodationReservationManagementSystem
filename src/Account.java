@@ -7,15 +7,32 @@ public class Account {
     public Address mailingAddress;
     public String email;
     public String phoneNumber;
-    List<Reservation> reservationList = new ArrayList<>();
+    List<Reservation> reservationList;
 
-    public Account(Address mailingAddress, String email, String phoneNumber) {}
+    public Account(String accountNumber, Address mailingAddress, String email, String phoneNumber) {
+//        this.reservationList = new ArrayList<>();
+//        this.accountNumber = accountNumber;
+//        this.mailingAddress = mailingAddress;
+//        this.email = email;
+//        this.phoneNumber = phoneNumber;
+    }
 
-    //addReservation creates a Reservation and adds it to reservationList
-    public void addReservation(Reservation reservation){}
+    //addReservation adds Reservation to reservationList
+    public void addReservation(Reservation reservation){
+        /*
+        take reservation and add it to reservationList
+         */
+    }
 
-    //editDetails allows the Account object's parameters to be modified
-    public void editDetails(Address newMailingAddress, String newPhoneNumber, String newEmail){}
+    public void setMailingAddress(Address newMailingAddress) {
+       // this.mailingAddress = newMailingAddress;
+    }
+    public void setPhoneNumber(String newPhoneNumber) {
+       // this.phoneNumber = newPhoneNumber;
+    }
+    public void setEmailAddress(String newEmail) {
+        //this.email = newEmail;
+    }
 
     //provide UI with ability to output data to the screen
     public String toString(){return "String";}
