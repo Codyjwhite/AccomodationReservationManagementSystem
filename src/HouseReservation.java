@@ -6,6 +6,8 @@ public class HouseReservation extends Reservation {
 
         super();
     }
+
+    //TODO Fix constructor to create object with full Reservation parameters
     public HouseReservation(int numOfFloors) {
 
 //        this.numOfFloors = numOfFloors;
@@ -24,6 +26,15 @@ public class HouseReservation extends Reservation {
         //return super.clone();
         return null;
     }
+
+    public void setNumOfFloors(int numOfFloors) {
+        this.numOfFloors = numOfFloors;
+    }
+
+    public int getNumOfFloors() {
+        return numOfFloors;
+    }
+
     //provide UI with ability to output data to the screen
     public String toString(){return null;}
 }

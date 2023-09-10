@@ -5,6 +5,8 @@ public class HotelReservation extends Reservation{
     public HotelReservation(){
         super();
     }
+
+    //TODO Fix constructor to create object with full Reservation parameters
     public HotelReservation(Boolean hasKitchenette){
 //        this.hasKitchenette = hasKitchenette;
     }
@@ -26,6 +28,14 @@ public class HotelReservation extends Reservation{
     public HotelReservation clone(){
         //return super.clone();
         return null;
+    }
+
+    public void setHasKitchenette(Boolean hasKitchenette) {
+        this.hasKitchenette = hasKitchenette;
+    }
+
+    public Boolean getHasKitchenette() {
+        return hasKitchenette;
     }
 
     //provide UI with ability to output data to the screen
