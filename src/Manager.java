@@ -12,8 +12,8 @@ public class Manager {
     private Map<Account, List<Reservation>> accountList;
 
     public Manager() {
-//        this.directoryPath = "directorypath";
-//        this.accountList = new HashMap<>();
+        this.directoryPath = "directorypath";
+        this.accountList = new HashMap<>();
     }
     //loadAccounts loads in stored data into a HashMap to be used by other methods
     public void loadAccounts(){
@@ -58,7 +58,7 @@ public class Manager {
          */
     }
 
-    public Account getAccountByNumber(String accountNumber) {
+    private Account getAccountByNumber(String accountNumber) {
         /*
         iterate through the HashMap looking for Account with accountNumber
 
@@ -71,7 +71,7 @@ public class Manager {
         return null;
     }
 
-    public Reservation getReservationByNumber(String accountNumber, String reservationNumber){
+    private Reservation getReservationByNumber(String accountNumber, String reservationNumber){
         /*
         Account userAccount = getAccountByNumber(accountNumber)
 

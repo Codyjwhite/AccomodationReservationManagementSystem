@@ -7,14 +7,14 @@ public class Account {
     private Address mailingAddress;
     private String email;
     private String phoneNumber;
-    private List<Reservation> reservations;
+    private List<Reservation> reservationList;
 
     public Account(String accountNumber, Address mailingAddress, String email, String phoneNumber) {
-//        this.reservationList = new ArrayList<>();
-//        this.accountNumber = accountNumber;
-//        this.mailingAddress = mailingAddress;
-//        this.email = email;
-//        this.phoneNumber = phoneNumber;
+        this.reservationList = new ArrayList<>();
+        this.accountNumber = accountNumber;
+        this.mailingAddress = mailingAddress;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
     }
 
     public String getAccountNumber() {
@@ -34,17 +34,17 @@ public class Account {
     }
 
     public List<Reservation> getReservations() {
-        return new ArrayList<>(reservations);
+        return new ArrayList<>(reservationList);
     }
 
     public void setMailingAddress(Address newMailingAddress) {
-        // this.mailingAddress = newMailingAddress;
+        this.mailingAddress = newMailingAddress;
     }
     public void setPhoneNumber(String newPhoneNumber) {
-        // this.phoneNumber = newPhoneNumber;
+        this.phoneNumber = newPhoneNumber;
     }
     public void setEmailAddress(String newEmail) {
-        //this.email = newEmail;
+        this.email = newEmail;
     }
 
     //addReservation adds Reservation to reservationList
