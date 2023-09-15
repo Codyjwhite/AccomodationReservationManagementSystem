@@ -1,6 +1,6 @@
 public class HotelReservation extends Reservation{
 
-    private Boolean hasKitchenette;
+    private boolean hasKitchenette;
 
     public HotelReservation(){
         super();

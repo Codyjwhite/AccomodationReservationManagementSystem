@@ -1,7 +1,7 @@
 public class CabinReservation extends Reservation {
 
-    private Boolean hasFullKitchen;
-    private Boolean hasLoft;
+    private boolean hasFullKitchen;
+    private boolean hasLoft;
 
     public CabinReservation(){
         super();
