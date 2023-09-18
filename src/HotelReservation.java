@@ -3,7 +3,6 @@ public class HotelReservation extends Reservation{
     private boolean hasKitchenette;
 
     public HotelReservation(){
-        super();
     }
 
     //TODO Fix constructor to create object with full Reservation parameters

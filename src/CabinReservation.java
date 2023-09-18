@@ -4,7 +4,6 @@ public class CabinReservation extends Reservation {
     private boolean hasLoft;
 
     public CabinReservation(){
-        super();
     }
 
     //TODO Fix constructor to create object with full Reservation parameters

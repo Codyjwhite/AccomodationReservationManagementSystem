@@ -4,7 +4,6 @@ public class HouseReservation extends Reservation {
 
     public HouseReservation(){
 
-        super();
     }
 
     //TODO Fix constructor to create object with full Reservation parameters
