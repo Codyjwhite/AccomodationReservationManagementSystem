@@ -1,14 +1,17 @@
-public class InvalidFormatException extends Exception {
+public class InvalidFormatException extends IllegalArgumentException {
     String message;
 
     public InvalidFormatException() {
-
-        super("Invalid format: Data does not meet expected format");
     }
 
     public InvalidFormatException(String message) {
 
-        super("Invalid format: " + message);
+        super();
+        this.message = "Expected format:" + message;
+    }
+
+    @Override
+    public String toString() {
+        return "Invalid format: Data does not meet expected format " + message;
     }
 }
-
