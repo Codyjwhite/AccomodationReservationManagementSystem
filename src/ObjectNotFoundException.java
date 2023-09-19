@@ -1,14 +1,25 @@
 public class ObjectNotFoundException extends Exception {
 
     String message;
-
-    public ObjectNotFoundException(){
-        super("Object not found");
+    String objectNumber;
+    public ObjectNotFoundException(String objectNumber){
+        super();
+        this.objectNumber = objectNumber;
     }
 
-    //TODO either add message or remove message parameter
-    public  ObjectNotFoundException(String objectNumber, String message){
 
-        super(objectNumber + " not found");
+    public  ObjectNotFoundException(String objectNumber, String message){
+        this.objectNumber = objectNumber;
+        this.message = message;
+    }
+
+    @Override
+    public String toString() {
+        if(this.message == null) {
+            return objectNumber + "not found";
+        }
+        else {
+            return objectNumber + " not found: " + message;
+        }
     }
 }
