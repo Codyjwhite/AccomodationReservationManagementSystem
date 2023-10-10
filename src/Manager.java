@@ -23,7 +23,7 @@ public class Manager {
 
         Check if file exist handling error if check returns false
         if !dataFile
-            error handle
+            throw FileNotFoundException
 
          create array of accounts
          File[] Accounts = files found within datafile
@@ -49,11 +49,11 @@ public class Manager {
                            String country, String email, String phoneNumber){
         /*
         Address accountAddress = new address(String street,String city,String state,String zipCode,String country)
-        Account newAccount = new Account(accountAddress, email, phoneNumber)
+        Account newAccount = new Account(String accountNumber, accountAddress, email, phoneNumber)
 
         create an empty reservations list
 
-        add new account and empty list to account list
+        add new account and empty list to accountList
 
          */
     }
@@ -126,12 +126,12 @@ public class Manager {
         Account resAccount = getAccountByNumber(accountNumber)
 
         if resAccount == null
-            return false
+            throw objectNotFoundException
         if resAccount != null
             if mailAddress parameters != null
                 create new mailAddress object
             if physicalAddress parameters == null
-                throw exception
+                throw PhysicalAddressRequiredException
             else
                 create physicalAddress object
 
@@ -149,6 +149,7 @@ public class Manager {
          */
         return true;
     }
+
 
     //Sets status of the reservation to complete
     public void completeReservation(String accountNumber, String reservationNumber){

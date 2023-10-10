@@ -1,3 +1,5 @@
+import java.time.LocalDate;
+
 public class HouseReservation extends Reservation {
 
     private int numOfFloors;
@@ -7,9 +9,13 @@ public class HouseReservation extends Reservation {
     }
 
     //TODO Fix constructor to create object with full Reservation parameters
-    public HouseReservation(int numOfFloors) {
+    public HouseReservation(String accountNumber, String reservationNumber, Address physicalAddress, Address mailingAddress,
+                            LocalDate startDate, int stayDuration, int numberOfBeds, int numberOfBedrooms,
+                            float numberOfBathrooms, int lodgingSize, int numOfFloors) {
 
-//        this.numOfFloors = numOfFloors;
+        super(accountNumber, reservationNumber, physicalAddress, mailingAddress,
+                startDate,stayDuration, numberOfBeds,numberOfBedrooms, numberOfBathrooms,lodgingSize);
+//      this.numOfFloors = numOfFloors;
     }
 
     //returns a double representing a House Reservation's cost per night

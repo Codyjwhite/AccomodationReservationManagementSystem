@@ -6,7 +6,7 @@ public class InvalidDirectoryException extends FileNotFoundException {
 
     InvalidDirectoryException(String directoryPath) {
         super();
-        this.directoryPath =directoryPath;
+        this.directoryPath = directoryPath;
     }
     InvalidDirectoryException(String directoryPath, String message){
         this.directoryPath = directoryPath;

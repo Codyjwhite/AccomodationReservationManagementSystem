@@ -1,3 +1,5 @@
+import java.time.LocalDate;
+
 public class HotelReservation extends Reservation{
 
     private boolean hasKitchenette;
@@ -6,8 +8,13 @@ public class HotelReservation extends Reservation{
     }
 
     //TODO Fix constructor to create object with full Reservation parameters
-    public HotelReservation(Boolean hasKitchenette){
-//        this.hasKitchenette = hasKitchenette;
+    public HotelReservation(String accountNumber, String reservationNumber, Address physicalAddress, Address mailingAddress,
+                            LocalDate startDate, int stayDuration, int numberOfBeds, int numberOfBedrooms,
+                            float numberOfBathrooms, int lodgingSize, Boolean hasKitchenette){
+
+        super(accountNumber, reservationNumber, physicalAddress, mailingAddress,
+                startDate,stayDuration, numberOfBeds,numberOfBedrooms, numberOfBathrooms,lodgingSize);
+//      this.hasKitchenette = hasKitchenette;
     }
 
     //returns a double representing a Hotel Reservation's cost per night

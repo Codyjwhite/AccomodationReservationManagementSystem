@@ -1,3 +1,5 @@
+import java.time.LocalDate;
+
 public class CabinReservation extends Reservation {
 
     private boolean hasFullKitchen;
@@ -7,7 +9,11 @@ public class CabinReservation extends Reservation {
     }
 
     //TODO Fix constructor to create object with full Reservation parameters
-    public CabinReservation(Boolean hasFullKitchen, Boolean hasLoft) {
+    public CabinReservation(String accountNumber, String reservationNumber, Address physicalAddress, Address mailingAddress,
+                            LocalDate startDate, int stayDuration, int numberOfBeds, int numberOfBedrooms,
+                            float numberOfBathrooms, int lodgingSize, Boolean hasFullKitchen, Boolean hasLoft) {
+        super(accountNumber, reservationNumber, physicalAddress, mailingAddress,
+                startDate,stayDuration, numberOfBeds,numberOfBedrooms, numberOfBathrooms,lodgingSize);
         this.hasFullKitchen = hasFullKitchen;
         this.hasLoft = hasLoft;
     }

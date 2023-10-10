@@ -145,7 +145,7 @@ public abstract class Reservation implements Cloneable {
     }
 
     //Sets status of the reservation to complete
-    public void completeReservation(String accountNumber, String reservationNumber){
+    public void completeReservation(){
         //this.currentStatus = status.Completed;
     }
     @Override

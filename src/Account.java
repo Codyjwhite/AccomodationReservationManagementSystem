@@ -47,6 +47,15 @@ public class Account {
         this.email = newEmail;
     }
 
+    private boolean isValidEmail(String email){
+        //check if format requirements are met
+        return true;
+    }
+    private boolean isValidPhoneNumber(String phoneNumber){
+        //check if format requirements are met
+        return true;
+    }
+
     //addReservation adds Reservation to reservationList
     public void addReservation(Reservation reservation){
         /*
