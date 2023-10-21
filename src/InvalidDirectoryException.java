@@ -2,7 +2,7 @@ import java.io.FileNotFoundException;
 
 public class InvalidDirectoryException extends FileNotFoundException {
     String directoryPath;
-    String message;
+    String message = null;
 
     InvalidDirectoryException(String directoryPath) {
         super();

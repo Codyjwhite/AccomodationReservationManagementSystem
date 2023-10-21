@@ -1,3 +1,4 @@
+import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,5 +65,7 @@ public class Account {
     }
 
     //provide UI with ability to output data to the screen
-    public String toString(){return "String";}
+    public String toString(){
+        Gson newJsonFile = new Gson();
+        return newJsonFile.toJson(this);}
 }

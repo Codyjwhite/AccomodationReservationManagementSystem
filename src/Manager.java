@@ -1,3 +1,4 @@
+import java.io.File;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,19 +13,24 @@ public class Manager {
     private Map<Account, List<Reservation>> accountList;
 
     public Manager() {
-        this.directoryPath = "directorypath";
+        this.directoryPath = "C:\\Users\\codyj\\OneDrive\\Desktop\\Accommodation_Accounts";
         this.accountList = new HashMap<>();
     }
+
+    public void testMethod() {
+        int i = 1;
+        for (Map.Entry<Account, List<Reservation>> entry: accountList.entrySet()) {
+            Account currentAccount = entry.getKey();
+            List<Reservation> currentReservation = entry.getValue();
+
+            System.out.println(currentAccount.toString());
+            ++i;
+        }
+
+    }
     //loadAccounts loads in stored data into a HashMap to be used by other methods
-    public void loadAccounts(){
+    public void loadAccounts() throws InvalidDirectoryException {
        /*
-        Create a file object using the directoryPath
-        dataFile = new File(directoryPath)
-
-        Check if file exist handling error if check returns false
-        if !dataFile
-            throw FileNotFoundException
-
          create array of accounts
          File[] Accounts = files found within datafile
 
@@ -42,20 +48,29 @@ public class Manager {
 
            accountList.put(current account object, current reservation list)
         */
+        //Create a file object using the directoryPath
+        File dataFile = new File(directoryPath);
+
+        //Check if file exist handling error if check returns false
+        if (!dataFile.exists() || !dataFile.isDirectory()) {
+            throw new InvalidDirectoryException(directoryPath);
+        }
+        //FIXME Continue loadACCOUNTS once json records can be created and stored
     }
 
     //addAccount creates an Account object and adds it to account list
     public void addAccount(String accountNumber, String street, String city, String state, String zipCode,
                            String country, String email, String phoneNumber){
-        /*
-        Address accountAddress = new address(String street,String city,String state,String zipCode,String country)
-        Account newAccount = new Account(String accountNumber, accountAddress, email, phoneNumber)
 
-        create an empty reservations list
+        Address accountAddress = new Address(street,city,state,zipCode,country);
+        Account newAccount = new Account(accountNumber, accountAddress, email, phoneNumber);
 
-        add new account and empty list to accountList
+        //create an empty reservations list
+        List<Reservation> accountReservation = new ArrayList<Reservation>();
 
-         */
+        //add new account and empty list to accountList
+        accountList.put(newAccount, accountReservation);
+        //Create new json file and empty directory for reservations
     }
 
     private Account getAccountByNumber(String accountNumber) {
