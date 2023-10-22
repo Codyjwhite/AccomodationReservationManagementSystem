@@ -1,4 +1,6 @@
-import java.time.LocalDate;
+import com.google.gson.Gson;
+
+import java.util.Date;
 
 public class CabinReservation extends Reservation {
 
@@ -10,7 +12,7 @@ public class CabinReservation extends Reservation {
 
     //TODO Fix constructor to create object with full Reservation parameters
     public CabinReservation(String accountNumber, String reservationNumber, Address physicalAddress, Address mailingAddress,
-                            LocalDate startDate, int stayDuration, int numberOfBeds, int numberOfBedrooms,
+                            Date startDate, int stayDuration, int numberOfBeds, int numberOfBedrooms,
                             float numberOfBathrooms, int lodgingSize, Boolean hasFullKitchen, Boolean hasLoft) {
         super(accountNumber, reservationNumber, physicalAddress, mailingAddress,
                 startDate,stayDuration, numberOfBeds,numberOfBedrooms, numberOfBathrooms,lodgingSize);
@@ -57,5 +59,8 @@ public class CabinReservation extends Reservation {
     }
 
     //provide UI with ability to output data to the screen
-    public String toString(){return null;}
+    public String toString(){
+        Gson newJsonFile = new Gson();
+        return newJsonFile.toJson(this);
+    }
 }

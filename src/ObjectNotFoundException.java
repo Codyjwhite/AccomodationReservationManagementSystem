@@ -1,4 +1,4 @@
-public class ObjectNotFoundException extends Exception {
+public class ObjectNotFoundException extends RuntimeException{
 
     String message;
     String objectNumber;

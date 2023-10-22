@@ -1,6 +1,7 @@
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
-public class InvalidDirectoryException extends FileNotFoundException {
+public class InvalidDirectoryException extends IOException {
     String directoryPath;
     String message = null;
 
@@ -14,7 +15,7 @@ public class InvalidDirectoryException extends FileNotFoundException {
     }
 
     @Override
-    public String toString() {
+    public String getMessage() {
         if(message == null) {
             return directoryPath + " not found";
         }

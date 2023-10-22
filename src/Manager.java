@@ -1,5 +1,7 @@
 import java.io.File;
-import java.time.LocalDate;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,25 +11,24 @@ public class Manager {
 
     private String directoryPath;
 
-    private enum resType { Hotel, Cabin, House}
-    private Map<Account, List<Reservation>> accountList;
+    public enum resType { Hotel, Cabin, House}
+    private Map<String, Account> accountList;
 
     public Manager() {
         this.directoryPath = "C:\\Users\\codyj\\OneDrive\\Desktop\\Accommodation_Accounts";
         this.accountList = new HashMap<>();
     }
 
-    public void testMethod() {
-        int i = 1;
-        for (Map.Entry<Account, List<Reservation>> entry: accountList.entrySet()) {
-            Account currentAccount = entry.getKey();
-            List<Reservation> currentReservation = entry.getValue();
-
-            System.out.println(currentAccount.toString());
-            ++i;
-        }
-
-    }
+//    public void testMethod() {
+//        int i = 1;
+//        for (Map.Entry<Account, List<Reservation>> entry: accountList.entrySet()) {
+//            Account currentAccount = entry.getKey();
+//            List<Reservation> currentReservation = entry.getValue();
+//            System.out.println(currentAccount.toString());
+//            ++i;
+//        }
+//
+//    }
     //loadAccounts loads in stored data into a HashMap to be used by other methods
     public void loadAccounts() throws InvalidDirectoryException {
        /*
@@ -60,32 +61,49 @@ public class Manager {
 
     //addAccount creates an Account object and adds it to account list
     public void addAccount(String accountNumber, String street, String city, String state, String zipCode,
-                           String country, String email, String phoneNumber){
+                           String country, String email, String phoneNumber) throws InvalidDirectoryException{
 
         Address accountAddress = new Address(street,city,state,zipCode,country);
         Account newAccount = new Account(accountNumber, accountAddress, email, phoneNumber);
 
-        //create an empty reservations list
-        List<Reservation> accountReservation = new ArrayList<Reservation>();
-
         //add new account and empty list to accountList
-        accountList.put(newAccount, accountReservation);
+        accountList.put(accountNumber, newAccount);
+
         //Create new json file and empty directory for reservations
+        String folderDirectory = directoryPath + "\\" + "Account-" + accountNumber;
+        String newDirectory = folderDirectory + "\\" + accountNumber;
+        String resDirectory = folderDirectory + "\\" + accountNumber + "-Reservations";
+
+        //Creates folder that holds account json
+        File folder = new File(folderDirectory);
+        if (!folder.exists()) {
+            if(!folder.mkdir()){
+                throw new InvalidDirectoryException(folderDirectory);
+            }
+        }
+        //Creates folder that holds reservation jsons
+        File resFolder = new File(resDirectory);
+        if (!resFolder.exists()) {
+            if(!resFolder.mkdir()){
+                throw new InvalidDirectoryException(resDirectory);
+            }
+        }
+        //Creates json holding account objects
+        try (FileWriter newAccountJson = new FileWriter(newDirectory)) {
+            newAccountJson.write(newAccount.toString());
+            } catch (IOException e) {
+                throw new InvalidDirectoryException(newDirectory);
+                }
+            }
+
+    public Account getAccountByNumber(String accountNumber) throws ObjectNotFoundException {
+
+        Account foundAccount = accountList.get(accountNumber);
+        if (foundAccount == null) {
+            throw new ObjectNotFoundException(accountNumber);
+            }
+        return foundAccount;
     }
-
-    private Account getAccountByNumber(String accountNumber) {
-        /*
-        iterate through the HashMap looking for Account with accountNumber
-
-        if null
-            return null
-        else
-            return foundAccount
-         */
-
-        return null;
-    }
-
     private Reservation getReservationByNumber(String accountNumber, String reservationNumber){
         /*
         Account userAccount = getAccountByNumber(accountNumber)
@@ -129,71 +147,99 @@ public class Manager {
 
     //addReservationToAccount add a created Reservation object to a specific Account in accountList
     //TODO Break down this into smaller more readable methods
-    public boolean addReservationToAccount(String accountNumber, String reservationNumber, LocalDate startDate,
+    public void addReservationToAccount(String accountNumber, String reservationNumber, Date startDate,
                                            int strayDuration, int numberOfBeds, int numberOfBedrooms,
                                            float numberOfBathrooms, int lodgingSize, Boolean hasKitchenette,
                                            Boolean hasFullKitchen, Boolean hasLoft,int numOfFloors, String phyStreet,
                                            String phyCity, String phyState, String phyZipCode, String phyCountry,
                                            String mailStreet,
                                            String mailCity, String mailState, String mailZipCode, String mailCountry,
-                                           resType resType){
-        /*
-        Account resAccount = getAccountByNumber(accountNumber)
+                                           resType resType) throws ObjectNotFoundException, InvalidDirectoryException {
 
-        if resAccount == null
-            throw objectNotFoundException
-        if resAccount != null
-            if mailAddress parameters != null
-                create new mailAddress object
-            if physicalAddress parameters == null
-                throw PhysicalAddressRequiredException
-            else
-                create physicalAddress object
+        // Retrieves account to add reservation to
+        Account resAccount;
+        try {
+            resAccount = getAccountByNumber(accountNumber);
+        } catch (ObjectNotFoundException e) {
+            throw new RuntimeException(e);
+        }
 
-            check reservation type
-            if resType == (Hotel, Cabin, House)
-                create reservation object
-                add reservation to account in accountList
+        //Creates address objects for reservation creation
 
-        run methods to make the changes permanent
-        if no exception
-            return True
-        if exception
-            return False
+        //Checks for null and creates mailing address object (Not required for every reservation)
+        Address mailAddress = null;
+        if (mailStreet != null && mailCity != null && mailState != null && mailZipCode != null
+                && mailCountry != null) {
+            mailAddress = new Address(mailStreet, mailCity, mailState, mailZipCode, mailCountry);
+        }
 
-         */
-        return true;
+        //Checks and creates physical address or sets mailing address as physical address (required)
+        Address phyAddress = null;
+        if (phyStreet != null && phyCity != null && phyState != null && phyZipCode != null && phyCountry != null) {
+            phyAddress = new Address(phyStreet, phyCity, phyState, phyZipCode, phyCountry);
+        } else if (mailAddress != null) {
+            phyAddress = mailAddress;
+        }
+        else {
+            throw new PhysicalAddressRequiredException();
+           }
+
+        Reservation newRes = null;
+
+        switch (resType) {
+
+            case Hotel -> {
+                 newRes = new HotelReservation(accountNumber, reservationNumber, mailAddress, phyAddress,
+                        startDate, strayDuration, numberOfBeds, numberOfBedrooms, numberOfBathrooms, lodgingSize,
+                        hasKitchenette);
+            }
+            case Cabin -> {
+                newRes = new CabinReservation(accountNumber, reservationNumber, mailAddress, phyAddress,
+                        startDate, strayDuration, numberOfBeds, numberOfBedrooms, numberOfBathrooms, lodgingSize,
+                        hasFullKitchen, hasLoft);
+            }
+            case House -> new HouseReservation(accountNumber, reservationNumber, mailAddress, phyAddress,
+                    startDate, strayDuration, numberOfBeds, numberOfBedrooms, numberOfBathrooms, lodgingSize,
+                    numOfFloors);
+        }
+        resAccount.addReservation(newRes);
+        String fileDirectory = directoryPath + "\\" + "Account-" + accountNumber  + "\\" + accountNumber + "-Reservations";
+        try (FileWriter newResJson = new FileWriter(fileDirectory)) {
+            newResJson.write(newRes.toString());
+        } catch (IOException e) {
+            throw new InvalidDirectoryException(fileDirectory);
+        }
     }
 
 
-    //Sets status of the reservation to complete
-    public void completeReservation(String accountNumber, String reservationNumber){
+            //Sets status of the reservation to complete
+            public void completeReservation (String accountNumber, String reservationNumber){
         /*
         Account userAccount = getAccountByNumber(accountNumber)
         Reservation userReservation = getReservationByNumber(accountNumber, reservationNumber)
 
          call method to set reservation as complete
          */
-    }
+            }
 
-    //Sets status of the reservation to canceled
-    public void cancelReservation(String accountNumber, String reservationNumber) {
+            //Sets status of the reservation to canceled
+            public void cancelReservation (String accountNumber, String reservationNumber){
         /*
         Account userAccount = getAccountByNumber(accountNumber)
         Reservation userReservation = getReservationByNumber(accountNumber, reservationNumber)
 
          call method to set reservation as canceled
          */
-    }
+            }
 
-    //updateReservation takes in a specific Reservation object to update its parameters
-    public boolean updateReservation(String accountNumber, String reservationNumber, LocalDate startDate,
-                                  int strayDuration, int numberOfBeds, int numberOfBedrooms,
-                                  float numberOfBathrooms, int lodgingSize, Boolean hasKitchenette,
-                                  Boolean hasFullKitchen, Boolean hasLoft,int numOfFloors, String phyStreet,
-                                  String phyCity, String phyState, String phyZipCode, String phyCountry,
-                                  String mailStreet,
-                                  String mailCity, String mailState, String mailZipCode, String mailCountry) {
+            //updateReservation takes in a specific Reservation object to update its parameters
+            public boolean updateReservation (String accountNumber, String reservationNumber, Date startDate,
+            int strayDuration, int numberOfBeds, int numberOfBedrooms,
+            float numberOfBathrooms, int lodgingSize, Boolean hasKitchenette,
+                    Boolean hasFullKitchen, Boolean hasLoft,int numOfFloors, String phyStreet,
+                    String phyCity, String phyState, String phyZipCode, String phyCountry,
+                    String mailStreet,
+                    String mailCity, String mailState, String mailZipCode, String mailCountry){
         /*
         Account userAccount = getAccountByNumber(accountNumber)
         Reservation userReservation = getReservationByNumber(accountNumber, reservationNumber)
@@ -208,11 +254,11 @@ public class Manager {
         if exception
             return False
          */
-        return true;
-    }
+                return true;
+            }
 
-    //returns a double representing a Reservation's cost per night
-    public Double pricePerNight(String accountNumber, String reservationNumber) {
+            //returns a double representing a Reservation's cost per night
+            public Double pricePerNight (String accountNumber, String reservationNumber){
         /*
         Account userAccount = getAccountByNumber(accountNumber)
         Reservation userReservation = getReservationByNumber(accountNumber, reservationNumber)
@@ -220,10 +266,11 @@ public class Manager {
         price = Run method to return pricePerNight
          */
 
-        return 0.0;}
+                return 0.0;
+            }
 
-    //returns a double representing a Reservation's total cost
-    public Double TotalPrice(Reservation reservation) {
+            //returns a double representing a Reservation's total cost
+            public Double TotalPrice (Reservation reservation){
         /*
         Account userAccount = getAccountByNumber(accountNumber)
         Reservation userReservation = getReservationByNumber(accountNumber, reservationNumber)
@@ -231,8 +278,9 @@ public class Manager {
         price = Run method to return totalPrice
          */
 
-        return 0.0;}
+                return 0.0;
+            }
 
-}
+        }
 
 

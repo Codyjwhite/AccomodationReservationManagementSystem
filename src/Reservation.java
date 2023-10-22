@@ -1,6 +1,7 @@
+import com.google.gson.Gson;
 import jdk.jshell.Snippet;
 
-import java.time.LocalDate;
+import java.util.Date;
 
 public abstract class Reservation implements Cloneable {
 
@@ -8,7 +9,7 @@ public abstract class Reservation implements Cloneable {
     private String reservationNumber;
     private Address physicalAddress;
     private Address mailingAddress;
-    private LocalDate startDate;
+    private Date startDate;
     private int stayDuration;
     private int numberOfBeds;
     private int numberOfBedrooms;
@@ -20,7 +21,7 @@ public abstract class Reservation implements Cloneable {
     public Reservation(){}
 
     public Reservation(String accountNumber, String reservationNumber, Address physicalAddress, Address mailingAddress,
-                       LocalDate startDate, int stayDuration, int numberOfBeds, int numberOfBedrooms,
+                       Date startDate, int stayDuration, int numberOfBeds, int numberOfBedrooms,
                        float numberOfBathrooms, int lodgingSize){
         this.accountNumber = accountNumber;
         this.reservationNumber = reservationNumber;
@@ -43,7 +44,7 @@ public abstract class Reservation implements Cloneable {
         this.mailingAddress= newAddress;
     }
 
-    public void setStartDate(LocalDate newStartDate){
+    public void setStartDate(Date newStartDate){
         this.startDate = newStartDate;
     }
 
@@ -82,7 +83,7 @@ public abstract class Reservation implements Cloneable {
         return mailingAddress;
     }
 
-    public LocalDate getStartDate() {
+    public Date getStartDate() {
         return startDate;
     }
 
@@ -154,5 +155,8 @@ public abstract class Reservation implements Cloneable {
         return null;
     }
     //provide UI with ability to output data to the screen
-    public String toString(){return null;}
+    public String toString(){
+        Gson newJsonFile = new Gson();
+        return newJsonFile.toJson(this);
+    }
 }
