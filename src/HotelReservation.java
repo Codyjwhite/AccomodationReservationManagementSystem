@@ -6,6 +6,7 @@ public class HotelReservation extends Reservation{
 
     private boolean hasKitchenette;
 
+
     public HotelReservation(){
     }
 
@@ -13,10 +14,11 @@ public class HotelReservation extends Reservation{
     public HotelReservation(String accountNumber, String reservationNumber, Address physicalAddress, Address mailingAddress,
                             Date startDate, int stayDuration, int numberOfBeds, int numberOfBedrooms,
                             float numberOfBathrooms, int lodgingSize, Boolean hasKitchenette){
+        super(accountNumber, reservationNumber, physicalAddress, mailingAddress, startDate,
+                stayDuration, numberOfBeds, numberOfBedrooms, numberOfBathrooms, lodgingSize);
 
-        super(accountNumber, reservationNumber, physicalAddress, mailingAddress,
-                startDate,stayDuration, numberOfBeds,numberOfBedrooms, numberOfBathrooms,lodgingSize);
-//      this.hasKitchenette = hasKitchenette;
+        this.hasKitchenette = hasKitchenette;
+
     }
 
     //returns a double representing a Hotel Reservation's cost per night
@@ -47,8 +49,8 @@ public class HotelReservation extends Reservation{
     }
 
     //provide UI with ability to output data to the screen
-    public String toString(){
-        Gson newJsonFile = new Gson();
-        return newJsonFile.toJson(this);
-    }
+//    public String toString(){
+//        Gson newJsonFile = new Gson();
+//        return newJsonFile.toJson(this);
+//    }
 }

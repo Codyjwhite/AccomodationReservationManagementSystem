@@ -15,9 +15,8 @@ public class HouseReservation extends Reservation {
                             Date startDate, int stayDuration, int numberOfBeds, int numberOfBedrooms,
                             float numberOfBathrooms, int lodgingSize, int numOfFloors) {
 
-        super(accountNumber, reservationNumber, physicalAddress, mailingAddress,
-                startDate,stayDuration, numberOfBeds,numberOfBedrooms, numberOfBathrooms,lodgingSize);
-//      this.numOfFloors = numOfFloors;
+        this.numOfFloors = numOfFloors;
+
     }
 
     //returns a double representing a House Reservation's cost per night
@@ -43,8 +42,8 @@ public class HouseReservation extends Reservation {
     }
 
     //provide UI with ability to output data to the screen
-    public String toString(){
-        Gson newJsonFile = new Gson();
-        return newJsonFile.toJson(this);
-    }
+//    public String toString(){
+//        Gson newJsonFile = new Gson();
+//        return newJsonFile.toJson(this);
+//    }
 }

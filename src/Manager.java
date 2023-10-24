@@ -1,10 +1,12 @@
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 public class Manager {
 
@@ -19,45 +21,98 @@ public class Manager {
         this.accountList = new HashMap<>();
     }
 
-    //    public void testMethod() {
-//        int i = 1;
-//        for (Map.Entry<Account, List<Reservation>> entry: accountList.entrySet()) {
-//            Account currentAccount = entry.getKey();
-//            List<Reservation> currentReservation = entry.getValue();
-//            System.out.println(currentAccount.toString());
-//            ++i;
-//        }
-//
-//    }
+        public void printAccountList() {
+
+        for (Map.Entry<String, Account> entry: accountList.entrySet()) {
+            String accountNumber = entry.getKey();
+            Account currentAccount = entry.getValue();
+            System.out.println(currentAccount.toString());
+            //TODO remove below line before submission
+            for(Reservation res : currentAccount.getReservations()) {
+                System.out.println(res.getReservationNumber() + " loaded");
+            }
+
+        }
+
+    }
     //loadAccounts loads in stored data into a HashMap to be used by other methods
-    public void loadAccounts() throws InvalidDirectoryException {
-       /*
-         create array of accounts
-         File[] Accounts = files found within datafile
-
-         for account in accounts
-            load data from account json
-            create account object with loaded json data
-
-            resDirect = account reservation directory
-            File[] = resFiles = reservation files in resDirect
-
-            List<Reservation> reservations = new ArrrayList<>
-            for resFile in resDirect
-                create reservation object with json data
-                reservations.add(created reservation object)
-
-           accountList.put(current account object, current reservation list)
-        */
+    public void loadAccounts() throws IOException {
         //Create a file object using the directoryPath
         File dataFile = new File(directoryPath);
+        Gson accountGson = new Gson();
+        Gson reservationGson = new Gson();
 
         //Check if file exist handling error if check returns false
         if (!dataFile.exists() || !dataFile.isDirectory()) {
             throw new InvalidDirectoryException(directoryPath);
         }
-        //FIXME Continue loadACCOUNTS once json records can be created and stored
+        //Load acccounts into accountList
+        File[] files = dataFile.listFiles();
+        assert files != null;
+        for(File accFile :files) {
+           File accountFolder = new File(accFile.getAbsolutePath());
+           File[] accountJson = accountFolder.listFiles((dir, name) -> name.toLowerCase().endsWith(".json"));
+           for(File jsonFile: accountJson) {
+               try (FileReader reader = new FileReader(jsonFile)) {
+                   //Creates Account object with loaded json
+                   Account newAccount = accountGson.fromJson(reader, Account.class);
+                   accountList.put(newAccount.getAccountNumber(), newAccount);
+                   //TODO remove below line before submission
+                   System.out.println(newAccount.getAccountNumber() + " loaded");
 
+                   //Load reservations into account's list
+                   File reservationFolder = new File(accFile, newAccount.getAccountNumber() + "-Reservations");
+
+                   if(reservationFolder.exists() && reservationFolder.isDirectory()) {
+                       //TODO REMOVE BELOW
+                       System.out.println("Entering reservation folder: " + reservationFolder.getAbsolutePath());
+                       File[] reservationFiles = reservationFolder.listFiles((dir, name) -> name.toLowerCase().endsWith(".json"));
+                       if (reservationFiles != null) {
+                           for (File resFile : reservationFiles) {
+                               //TODO REMOVE BELOW
+                               System.out.println("Processing reservation file: " + resFile.getName());
+                               try (FileReader reader1 = new FileReader(resFile)) {
+                                   char resTypeIdent = resFile.getName().charAt(0);
+                                   switch (resTypeIdent) {
+                                       case 'H' -> {
+                                           //TODO REMOVE BELOW
+                                           System.out.println("Loading hotel reservation from: " + resFile.getName());
+                                           HotelReservation hotelReservation = reservationGson.fromJson(reader1,
+                                                   HotelReservation.class);
+                                           newAccount.getReservations().add(hotelReservation);
+                                           System.out.println(hotelReservation.toString());
+                                       }
+                                       case 'C' -> {
+                                           //TODO REMOVE BELOW
+                                           System.out.println("Loading cabin reservation from: " + resFile.getName());
+                                           CabinReservation cabinReservation = reservationGson.fromJson(reader1,
+                                                   CabinReservation.class);
+                                           newAccount.getReservations().add(cabinReservation);
+                                           System.out.println(cabinReservation.toString());
+                                       }
+                                       case 'O' -> {
+                                           //TODO REMOVE BELOW
+                                           System.out.println("Loading house reservation from: " + resFile.getName());
+                                           HouseReservation houseReservation = reservationGson.fromJson(reader1,
+                                                   HouseReservation.class);
+                                           newAccount.getReservations().add(houseReservation);
+                                           System.out.println(houseReservation.toString());
+                                       }
+                                   }
+
+
+                               }
+
+                           }
+                       }
+                   }
+
+
+               } catch (InvalidDirectoryException e) {
+                   throw new InvalidDirectoryException(accFile.getAbsolutePath());
+               }
+           }
+        }
     }
 
     //addAccount creates an Account object and adds it to account list

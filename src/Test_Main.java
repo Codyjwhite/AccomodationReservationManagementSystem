@@ -1,11 +1,13 @@
+import java.io.IOException;
 import java.util.Date;
 
 public class Test_Main {
-    public static void main(String[] args) throws InvalidDirectoryException, ObjectNotFoundException {
+    public static void main(String[] args) throws IOException, ObjectNotFoundException {
 
         Manager manager = new Manager();
 
         manager.loadAccounts();
+        manager.printAccountList();
 
 
 
@@ -136,4 +138,5 @@ public class Test_Main {
         );
 
     }
+
 }

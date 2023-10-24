@@ -56,8 +56,8 @@ public abstract class Reservation implements Cloneable {
         this.numberOfBeds = newNumberOfBeds;
     }
 
-    public void setNumberOfBedsrooms(int newNumberOfBedsrooms) {
-        this.numberOfBedrooms = newNumberOfBedsrooms;
+    public void setNumberOfBedrooms(int newNumberOfBedrooms) {
+        this.numberOfBedrooms = newNumberOfBedrooms;
     }
 
     public void setNumberOfBathrooms(float newNumberOfBathrooms) {

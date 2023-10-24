@@ -7,6 +7,8 @@ public class CabinReservation extends Reservation {
     private boolean hasFullKitchen;
     private boolean hasLoft;
 
+
+
     public CabinReservation(){
     }
 
@@ -14,10 +16,12 @@ public class CabinReservation extends Reservation {
     public CabinReservation(String accountNumber, String reservationNumber, Address physicalAddress, Address mailingAddress,
                             Date startDate, int stayDuration, int numberOfBeds, int numberOfBedrooms,
                             float numberOfBathrooms, int lodgingSize, Boolean hasFullKitchen, Boolean hasLoft) {
-        super(accountNumber, reservationNumber, physicalAddress, mailingAddress,
-                startDate,stayDuration, numberOfBeds,numberOfBedrooms, numberOfBathrooms,lodgingSize);
+
+        super(accountNumber, reservationNumber, physicalAddress, mailingAddress, startDate,
+                stayDuration, numberOfBeds, numberOfBedrooms, numberOfBathrooms, lodgingSize);
         this.hasFullKitchen = hasFullKitchen;
         this.hasLoft = hasLoft;
+
     }
     //returns a double representing a Cabin Reservation's cost per night
     @Override
@@ -59,8 +63,8 @@ public class CabinReservation extends Reservation {
     }
 
     //provide UI with ability to output data to the screen
-    public String toString(){
-        Gson newJsonFile = new Gson();
-        return newJsonFile.toJson(this);
-    }
+//    public String toString(){
+//        Gson newJsonFile = new Gson();
+//        return newJsonFile.toJson(this);
+//    }
 }
