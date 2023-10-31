@@ -57,46 +57,43 @@ public class Manager {
                    //Creates Account object with loaded json
                    Account newAccount = accountGson.fromJson(reader, Account.class);
                    accountList.put(newAccount.getAccountNumber(), newAccount);
-                   //TODO remove below line before submission
-                   System.out.println(newAccount.getAccountNumber() + " loaded");
 
                    //Load reservations into account's list
                    File reservationFolder = new File(accFile, newAccount.getAccountNumber() + "-Reservations");
 
                    if(reservationFolder.exists() && reservationFolder.isDirectory()) {
-                       //TODO REMOVE BELOW
-                       System.out.println("Entering reservation folder: " + reservationFolder.getAbsolutePath());
+
                        File[] reservationFiles = reservationFolder.listFiles((dir, name) -> name.toLowerCase().endsWith(".json"));
                        if (reservationFiles != null) {
                            for (File resFile : reservationFiles) {
-                               //TODO REMOVE BELOW
-                               System.out.println("Processing reservation file: " + resFile.getName());
+
                                try (FileReader reader1 = new FileReader(resFile)) {
                                    char resTypeIdent = resFile.getName().charAt(0);
                                    switch (resTypeIdent) {
                                        case 'H' -> {
-                                           //TODO REMOVE BELOW
-                                           System.out.println("Loading hotel reservation from: " + resFile.getName());
+                                           //Creates a House object from json
                                            HotelReservation hotelReservation = reservationGson.fromJson(reader1,
                                                    HotelReservation.class);
+                                           //newAccount.addReservation(hotelReservation);
                                            newAccount.getReservations().add(hotelReservation);
-                                           System.out.println(hotelReservation.toString());
+
                                        }
                                        case 'C' -> {
-                                           //TODO REMOVE BELOW
-                                           System.out.println("Loading cabin reservation from: " + resFile.getName());
+                                           //Creates a Cabin object from json
                                            CabinReservation cabinReservation = reservationGson.fromJson(reader1,
                                                    CabinReservation.class);
+                                           //newAccount.addReservation(cabinReservation);
                                            newAccount.getReservations().add(cabinReservation);
-                                           System.out.println(cabinReservation.toString());
+
+
                                        }
                                        case 'O' -> {
-                                           //TODO REMOVE BELOW
-                                           System.out.println("Loading house reservation from: " + resFile.getName());
+                                           //Creates a House object from json
                                            HouseReservation houseReservation = reservationGson.fromJson(reader1,
                                                    HouseReservation.class);
+                                           //newAccount.addReservation(houseReservation);
                                            newAccount.getReservations().add(houseReservation);
-                                           System.out.println(houseReservation.toString());
+
                                        }
                                    }
 
@@ -178,28 +175,55 @@ public class Manager {
 
 
     //updateAccount takes in a specific Account object to update its parameters
-    public boolean updateAccount(String accountNumber, String newEmail, String newPhoneNumber, String street,
-                                 String city, String state, String zipCode, String country){
-        /*
-        Account updatedAccount = getAccountByNumber(accountNumber)
+    public void updateAccount(String accountNumber, String newEmail, String newPhoneNumber, String street,
+                                 String city, String state, String zipCode, String country) throws InvalidDirectoryException {
 
-        if updated account == null
-            return false
-        if newEmail != null
-            run method to update account email
-        if newPhoneNumber != null
-            run method to update phoneNumber
-        if street, city, state, zipcode, country != null
-            create new address object
-            run method to update address
+        String newDirectory = directoryPath + "\\" + "Account-" + accountNumber + "\\" + accountNumber + ".json";
 
-        run methods to make the changes permanent
-            if no exception
-                return True
-            if exception
-                return False
-         */
-        return true;
+        //Check new parameters and update object
+        try {
+            Account updatedAccount = getAccountByNumber(accountNumber);
+
+            if (newEmail != null) {
+                updatedAccount.setEmailAddress(newEmail);
+            }
+            if (newPhoneNumber != null) {
+                updatedAccount.setPhoneNumber(newPhoneNumber);
+            }
+            if (street != null || city != null || state != null || zipCode != null || country != null) {
+                if (street != null) {
+                    updatedAccount.getMailingAddress().setStreet(street);
+                }
+                if (city != null) {
+                    updatedAccount.getMailingAddress().setCity(city);
+                }
+                if (state != null) {
+                    updatedAccount.getMailingAddress().setState(state);
+                }
+                if (zipCode != null) {
+                    updatedAccount.getMailingAddress().setZipCode(zipCode);
+                }
+                if (country != null) {
+                    updatedAccount.getMailingAddress().setCountry(country);
+                }
+            }
+            if ((street != null && city != null && state != null && zipCode != null && country != null)) {
+                Address newAddress = new Address(street, city, state, zipCode, country);
+                updatedAccount.setMailingAddress(newAddress);
+            }
+
+            //TODO rewrite account to JSON file
+            //Creates json holding account objects
+            try (FileWriter newAccountJson = new FileWriter(newDirectory)) {
+                newAccountJson.write(updatedAccount.toString());
+            } catch (IOException e) {
+                throw new InvalidDirectoryException(newDirectory);
+            }
+
+        } catch (ObjectNotFoundException e) {
+            throw new ObjectNotFoundException(accountNumber,"account number does not exist or is incorrect");
+        }
+
     }
 
     //addReservationToAccount add a created Reservation object to a specific Account in accountList
@@ -272,27 +296,27 @@ public class Manager {
     }
 
 
-            //Sets status of the reservation to complete
+    //Sets status of the reservation to complete
     public void completeReservation (String accountNumber, String reservationNumber){
-        /*
-        Account userAccount = getAccountByNumber(accountNumber)
-        Reservation userReservation = getReservationByNumber(accountNumber, reservationNumber)
 
-         call method to set reservation as complete
-         */
-            }
+        //Account userAccount = getAccountByNumber(accountNumber);
+        Reservation userReservation = getReservationByNumber(accountNumber, reservationNumber);
+
+        userReservation.completeReservation();
+
+        }
 
             //Sets status of the reservation to canceled
     public void cancelReservation (String accountNumber, String reservationNumber){
-        /*
-        Account userAccount = getAccountByNumber(accountNumber)
-        Reservation userReservation = getReservationByNumber(accountNumber, reservationNumber)
 
-         call method to set reservation as canceled
-         */
-            }
+        //Account userAccount = getAccountByNumber(accountNumber);
+        Reservation userReservation = getReservationByNumber(accountNumber, reservationNumber);
 
-            //updateReservation takes in a specific Reservation object to update its parameters
+        userReservation.cancelReservation();
+
+    }
+
+    //updateReservation takes in a specific Reservation object to update its parameters
     public boolean updateReservation (String accountNumber, String reservationNumber, Date startDate,
             int strayDuration, int numberOfBeds, int numberOfBedrooms,
             float numberOfBathrooms, int lodgingSize, Boolean hasKitchenette,
@@ -319,26 +343,21 @@ public class Manager {
 
             //returns a double representing a Reservation's cost per night
     public Double pricePerNight (String accountNumber, String reservationNumber){
-        /*
-        Account userAccount = getAccountByNumber(accountNumber)
-        Reservation userReservation = getReservationByNumber(accountNumber, reservationNumber)
 
-        price = Run method to return pricePerNight
-         */
+        //Account userAccount = getAccountByNumber(accountNumber);
+        Reservation userReservation = getReservationByNumber(accountNumber, reservationNumber);
 
-                return 0.0;
-            }
+
+        return userReservation.pricePerNight();
+    }
 
             //returns a double representing a Reservation's total cost
-    public Double TotalPrice (Reservation reservation){
-        /*
-        Account userAccount = getAccountByNumber(accountNumber)
-        Reservation userReservation = getReservationByNumber(accountNumber, reservationNumber)
+    public Double TotalPrice (String accountNumber, String reservationNumber){
 
-        price = Run method to return totalPrice
-         */
+        //Account userAccount = getAccountByNumber(accountNumber);
+        Reservation userReservation = getReservationByNumber(accountNumber, reservationNumber);
 
-                return 0.0;
+        return userReservation.TotalPrice();
             }
 
         }

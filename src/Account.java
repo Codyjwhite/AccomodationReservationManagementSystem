@@ -59,7 +59,7 @@ public class Account {
     }
 
     public List<Reservation> getReservations() {
-        return new ArrayList<>(reservationList);
+        return reservationList;
     }
 
     public void setMailingAddress(Address newMailingAddress) {

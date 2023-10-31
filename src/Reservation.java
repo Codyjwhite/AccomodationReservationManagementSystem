@@ -114,40 +114,39 @@ public abstract class Reservation implements Cloneable {
 
    //returns a double representing a Reservation's cost per night
     public double pricePerNight() {
-        /*
-        double totalPricePerNight = 0.0
-        double basicPrice = 120.0
-        double sizeFee = 15.0
 
-        if lodgingSize is greater than 900
-            totalPricePerNight = basicPrice + sizeFee
-        else
-            totalPricePerNight = basicPrice
+        double totalPricePerNight = 0.0;
+        double basicPrice = 120.0;
+        double sizeFee = 15.0;
 
-        return totalPricePerNight
+        if (lodgingSize > 900) {
+            totalPricePerNight = basicPrice + sizeFee;
+        }
+        else {
+                totalPricePerNight = basicPrice;
+            }
 
-         */
-        return 0.0;
+        return totalPricePerNight;
     }
 
     //returns a double representing a Reservation's total cost
     public double TotalPrice() {
-        /*
-        double totalPrice
-        totalPrice = pricePerNight() * stayDuration
-        return totalPrice
-         */
-        return 0.0;
+
+        double totalPrice;
+        totalPrice = pricePerNight() * stayDuration;
+        return totalPrice;
+
+
     }
 
     //Sets status of the reservation to canceled
     public void cancelReservation() {
-        //this.currentStatus = status.Canceled;
+        this.currentStatus = status.Canceled;
     }
 
     //Sets status of the reservation to complete
     public void completeReservation(){
-        //this.currentStatus = status.Completed;
+        this.currentStatus = status.Completed;
     }
     @Override
     public Reservation clone(){
