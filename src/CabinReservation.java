@@ -7,18 +7,12 @@ public class CabinReservation extends Reservation {
     private boolean hasFullKitchen;
     private boolean hasLoft;
 
-
-
-    public CabinReservation(){
-    }
-
-
     public CabinReservation(String accountNumber, String reservationNumber, Address physicalAddress, Address mailingAddress,
                             Date startDate, int stayDuration, int numberOfBeds, int numberOfBedrooms,
-                            float numberOfBathrooms, int lodgingSize, Boolean hasFullKitchen, Boolean hasLoft) {
+                            float numberOfBathrooms, int lodgingSize, String filePath, Boolean hasFullKitchen, Boolean hasLoft) {
 
         super(accountNumber, reservationNumber, physicalAddress, mailingAddress, startDate,
-                stayDuration, numberOfBeds, numberOfBedrooms, numberOfBathrooms, lodgingSize);
+                stayDuration, numberOfBeds, numberOfBedrooms, numberOfBathrooms, lodgingSize, filePath);
         this.hasFullKitchen = hasFullKitchen;
         this.hasLoft = hasLoft;
 
@@ -49,6 +43,29 @@ public class CabinReservation extends Reservation {
         return null;
     }
 
+
+    public void updateReservation (String accountNumber, String reservationNumber, Date startDate,
+                                   int stayDuration, int numberOfBeds, int numberOfBedrooms,
+                                   float numberOfBathrooms, int lodgingSize, String phyStreet,
+                                   String phyCity, String phyState, String phyZipCode, String phyCountry,
+                                   String mailStreet,
+                                   String mailCity, String mailState, String mailZipCode, String mailCountry,
+                                   boolean updateHasFullKitchen, boolean updateHasLoft) {
+        //Calls parent method for shared attributes
+        super.updateReservation(accountNumber,reservationNumber,startDate, stayDuration, numberOfBeds, numberOfBedrooms,
+                numberOfBathrooms,lodgingSize,phyStreet,phyCity,phyState,phyZipCode,phyCountry,mailStreet,
+                mailCity, mailState, mailZipCode, mailCountry);
+
+        //Unique attributes
+        if(updateHasFullKitchen) {
+            this.hasFullKitchen = !hasFullKitchen;
+        }
+        if(updateHasLoft) {
+            this.hasLoft = !hasLoft;
+        }
+
+
+    }
     public void setHasFullKitchen(Boolean hasFullKitchen) {
         this.hasFullKitchen = hasFullKitchen;
     }
@@ -65,9 +82,4 @@ public class CabinReservation extends Reservation {
         return hasLoft;
     }
 
-    //provide UI with ability to output data to the screen
-//    public String toString(){
-//        Gson newJsonFile = new Gson();
-//        return newJsonFile.toJson(this);
-//    }
 }

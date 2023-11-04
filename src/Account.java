@@ -1,4 +1,7 @@
 import com.google.gson.Gson;
+
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -6,11 +9,13 @@ import java.util.regex.Matcher;
 
 public class Account {
 
-    private String accountNumber;
+    private final String accountNumber;
     private Address mailingAddress;
     private String email;
     private String phoneNumber;
     private List<Reservation> reservationList;
+
+    private String filePath;
 
 
     //Variable used to handle the email validation
@@ -21,10 +26,11 @@ public class Account {
     private static final String phoneRegrex = "^(\\(\\d{3}\\)\\s?|\\d{3}[-\\s]?)\\d{3}[-\\s]?\\d{4}$";
     private static final Pattern phonePatten = Pattern.compile(phoneRegrex);
 
-    public Account(String accountNumber, Address mailingAddress, String email, String phoneNumber) {
+    public Account(String accountNumber, Address mailingAddress, String email, String phoneNumber, String filePath) {
         this.reservationList = new ArrayList<>();
         this.accountNumber = accountNumber;
         this.mailingAddress = mailingAddress;
+        this.filePath = filePath;
 
 
         if(this.isValidEmail(email)){
@@ -62,6 +68,10 @@ public class Account {
         return reservationList;
     }
 
+    public String getFilePath() {
+        return filePath;
+    }
+
     public void setMailingAddress(Address newMailingAddress) {
         this.mailingAddress = newMailingAddress;
     }
@@ -71,6 +81,7 @@ public class Account {
     public void setEmailAddress(String newEmail) {
         this.email = newEmail;
     }
+    public void setFilePath(String filePath) {this.filePath = filePath;}
 
     private boolean isValidEmail(String email){
         //check if format requirements are met
@@ -93,6 +104,31 @@ public class Account {
     public void addReservation(Reservation reservation){
 
         this.reservationList.add(reservation);
+
+    }
+    public void removeReservation(Reservation reservation) {
+        this.reservationList.remove(reservation);
+    }
+
+    public void updateAccount(String accountNumber, String newEmail, String newPhoneNumber, String street,
+                              String city, String state, String zipCode, String country) {
+        //Method used to update account objects
+        try {
+
+            if (newEmail != null) {
+                this.email = newEmail;
+            }
+            if (newPhoneNumber != null) {
+                this.phoneNumber= newPhoneNumber;
+            }
+            if (street != null || city != null || state != null || zipCode != null || country != null) {
+                this.mailingAddress.updateAddress(street, city, state, zipCode, country);
+            }
+
+
+        } catch (ObjectNotFoundException e) {
+            throw new ObjectNotFoundException(accountNumber,"account number does not exist or is incorrect");
+        }
 
     }
 

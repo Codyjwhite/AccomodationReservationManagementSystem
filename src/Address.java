@@ -53,6 +53,24 @@ public class Address {
         return country;
     }
 
-    //provide UI with ability to output data to the screen
-    public String toString(){return "String";}
+    public void updateAddress(String street, String city, String state, String zipCode, String country) {
+        if (street != null || city != null || state != null || zipCode != null || country != null) {
+            //method used to update address objects
+            if (street != null) {
+                this.setStreet(street);
+            }
+            if (city != null) {
+                this.setCity(city);
+            }
+            if (state != null) {
+                this.setState(state);
+            }
+            if (zipCode != null) {
+                this.setZipCode(zipCode);
+            }
+            if (country != null) {
+                this.setCountry(country);
+            }
+        }
+    }
 }

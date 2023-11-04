@@ -8,8 +8,8 @@ public class InvalidStatusException extends IllegalArgumentException {
         this.reservationNumber = reservationNumber;
         this.currentStatus = currentStatus;
     }
-    InvalidStatusException(status currentStatus, String message) {
-        this.currentStatus = currentStatus;
+    InvalidStatusException(String reservationNumber, String message) {
+        this.reservationNumber = reservationNumber;
         this.message = message;
     }
 
@@ -19,7 +19,7 @@ public class InvalidStatusException extends IllegalArgumentException {
             return reservationNumber + " has an invalid status of " + currentStatus;
         }
         else {
-            return reservationNumber + " has an invalid status of " + currentStatus + ": " + message;
+            return reservationNumber + message;
         }
     }
 }

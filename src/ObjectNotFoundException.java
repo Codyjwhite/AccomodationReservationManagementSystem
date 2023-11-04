@@ -16,7 +16,7 @@ public class ObjectNotFoundException extends RuntimeException{
     @Override
     public String toString() {
         if(this.message == null) {
-            return objectNumber + "not found";
+            return objectNumber + " not found";
         }
         else {
             return objectNumber + " not found: " + message;

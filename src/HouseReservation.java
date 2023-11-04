@@ -6,16 +6,11 @@ public class HouseReservation extends Reservation {
 
     private int numOfFloors;
 
-    public HouseReservation(){
-
-    }
-
-
     public HouseReservation(String accountNumber, String reservationNumber, Address physicalAddress, Address mailingAddress,
                             Date startDate, int stayDuration, int numberOfBeds, int numberOfBedrooms,
-                            float numberOfBathrooms, int lodgingSize, int numOfFloors) {
+                            float numberOfBathrooms, int lodgingSize, String filePath, int numOfFloors) {
         super(accountNumber, reservationNumber, physicalAddress, mailingAddress, startDate,
-                stayDuration, numberOfBeds, numberOfBedrooms, numberOfBathrooms, lodgingSize);
+                stayDuration, numberOfBeds, numberOfBedrooms, numberOfBathrooms, lodgingSize, filePath);
 
         this.numOfFloors = numOfFloors;
 
@@ -26,6 +21,24 @@ public class HouseReservation extends Reservation {
     public double pricePerNight(){
 
         return super.pricePerNight();
+    }
+
+    public void updateReservation (String accountNumber, String reservationNumber, Date startDate,
+                                   int stayDuration, int numberOfBeds, int numberOfBedrooms,
+                                   float numberOfBathrooms, int lodgingSize, String phyStreet,
+                                   String phyCity, String phyState, String phyZipCode, String phyCountry,
+                                   String mailStreet,
+                                   String mailCity, String mailState, String mailZipCode, String mailCountry,
+                                   int numOfFloors) {
+        //Calls parent method for shared attributes
+        super.updateReservation(accountNumber,reservationNumber,startDate, stayDuration, numberOfBeds, numberOfBedrooms,
+                numberOfBathrooms,lodgingSize,phyStreet,phyCity,phyState,phyZipCode,phyCountry,mailStreet,
+                mailCity, mailState, mailZipCode, mailCountry);
+
+        //Unique attributes
+        if (numOfFloors != -1) {
+            this.numOfFloors = numOfFloors;
+        }
     }
 
     @Override
@@ -42,9 +55,4 @@ public class HouseReservation extends Reservation {
         return numOfFloors;
     }
 
-    //provide UI with ability to output data to the screen
-//    public String toString(){
-//        Gson newJsonFile = new Gson();
-//        return newJsonFile.toJson(this);
-//    }
 }

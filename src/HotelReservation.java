@@ -6,16 +6,11 @@ public class HotelReservation extends Reservation {
 
     private boolean hasKitchenette;
 
-
-    public HotelReservation() {
-    }
-
-
     public HotelReservation(String accountNumber, String reservationNumber, Address physicalAddress, Address mailingAddress,
                             Date startDate, int stayDuration, int numberOfBeds, int numberOfBedrooms,
-                            float numberOfBathrooms, int lodgingSize, Boolean hasKitchenette) {
+                            float numberOfBathrooms, int lodgingSize, String filePath, Boolean hasKitchenette) {
         super(accountNumber, reservationNumber, physicalAddress, mailingAddress, startDate,
-                stayDuration, numberOfBeds, numberOfBedrooms, numberOfBathrooms, lodgingSize);
+                stayDuration, numberOfBeds, numberOfBedrooms, numberOfBathrooms, lodgingSize, filePath);
 
         this.hasKitchenette = hasKitchenette;
         this.setNumberOfBedrooms(1);
@@ -34,6 +29,26 @@ public class HotelReservation extends Reservation {
             basePrice = basePrice + 15.0;
         }
         return basePrice;
+    }
+
+    public void updateReservation (String accountNumber, String reservationNumber, Date startDate,
+                                   int stayDuration, int numberOfBeds, int numberOfBedrooms,
+                                   float numberOfBathrooms, int lodgingSize, String phyStreet,
+                                   String phyCity, String phyState, String phyZipCode, String phyCountry,
+                                   String mailStreet,
+                                   String mailCity, String mailState, String mailZipCode, String mailCountry,
+                                   boolean updateHasKitchenette){
+
+        //Calls parent method for shared attributes
+        super.updateReservation(accountNumber,reservationNumber,startDate, stayDuration, numberOfBeds, numberOfBedrooms,
+                numberOfBathrooms,lodgingSize,phyStreet,phyCity,phyState,phyZipCode,phyCountry,mailStreet,
+                mailCity, mailState, mailZipCode, mailCountry);
+
+        //Unique attributes
+        if (updateHasKitchenette) {
+            this.hasKitchenette = !hasKitchenette;
+        }
+
     }
 
     @Override

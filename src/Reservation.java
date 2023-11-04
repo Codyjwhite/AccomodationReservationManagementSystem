@@ -6,7 +6,7 @@ import java.util.Date;
 public abstract class Reservation implements Cloneable {
 
     private String accountNumber;
-    private String reservationNumber;
+    private final String reservationNumber;
     private Address physicalAddress;
     private Address mailingAddress;
     private Date startDate;
@@ -18,11 +18,11 @@ public abstract class Reservation implements Cloneable {
     private enum status { Draft, Completed, Canceled}
     private status currentStatus;
 
-    public Reservation(){}
+    private String filePath;
 
     public Reservation(String accountNumber, String reservationNumber, Address physicalAddress, Address mailingAddress,
                        Date startDate, int stayDuration, int numberOfBeds, int numberOfBedrooms,
-                       float numberOfBathrooms, int lodgingSize){
+                       float numberOfBathrooms, int lodgingSize, String filePath){
         this.accountNumber = accountNumber;
         this.reservationNumber = reservationNumber;
         this.physicalAddress = physicalAddress;
@@ -34,6 +34,7 @@ public abstract class Reservation implements Cloneable {
         this.numberOfBathrooms = numberOfBathrooms;
         this.lodgingSize = lodgingSize;
         this.currentStatus = status.Draft;
+        this.filePath = filePath;
 
     }
     public void setPhysicalAddress(Address newAddress){
@@ -67,6 +68,9 @@ public abstract class Reservation implements Cloneable {
     public void setLodgingSize(int newLodgingSize) {
         this.lodgingSize = newLodgingSize;
     }
+
+    public void setFilePath(String filePath) {this.filePath = filePath;}
+
     public String getAccountNumber() {
         return accountNumber;
     }
@@ -111,6 +115,10 @@ public abstract class Reservation implements Cloneable {
         return currentStatus;
     }
 
+    public String getFilePath() {
+        return filePath;
+    }
+
 
    //returns a double representing a Reservation's cost per night
     public double pricePerNight() {
@@ -139,20 +147,67 @@ public abstract class Reservation implements Cloneable {
 
     }
 
-    //Sets status of the reservation to canceled
-    public void cancelReservation() {
-        this.currentStatus = status.Canceled;
+
+
+    public void updateReservation (String accountNumber, String reservationNumber, Date startDate,
+                                   int stayDuration, int numberOfBeds, int numberOfBedrooms,
+                                   float numberOfBathrooms, int lodgingSize, String phyStreet,
+                                   String phyCity, String phyState, String phyZipCode, String phyCountry,
+                                   String mailStreet,
+                                   String mailCity, String mailState, String mailZipCode, String mailCountry) {
+
+        //Method used to update reservations, will get called by each subclass before updating unique attributes.
+
+        try {
+            if (phyStreet != null || phyCity != null || phyState != null || phyZipCode != null || phyCountry != null) {
+                this.getPhysicalAddress().updateAddress(phyStreet, phyCity, phyState, phyZipCode, phyCountry);
+            }
+            if (mailStreet != null || mailCity != null || mailState != null || mailZipCode != null || mailCountry != null) {
+                this.getMailingAddress().updateAddress(mailStreet, mailCity, mailState, mailZipCode, mailCountry);
+            }
+            if (startDate != null) {
+                this.setStartDate(startDate);
+            }
+            if (stayDuration != -1) {
+                this.setStayDuration(stayDuration);
+            }
+            if (numberOfBeds != -1) {
+                this.setNumberOfBeds(numberOfBeds);
+            }
+            if (numberOfBathrooms != -1) {
+                this.setNumberOfBathrooms(numberOfBathrooms);
+            }
+            if (numberOfBedrooms != -1) {
+                this.setNumberOfBedrooms(numberOfBedrooms);
+            }
+            if (lodgingSize != -1) {
+                this.setLodgingSize(lodgingSize);
+            }
+        } catch (ObjectNotFoundException e) {
+            throw new ObjectNotFoundException(reservationNumber, "Reservation number does not exist or is incorrect");
+        }
     }
+
 
     //Sets status of the reservation to complete
     public void completeReservation(){
+
         this.currentStatus = status.Completed;
     }
-    @Override
-    public Reservation clone(){
-        //return super.clone();
-        return null;
+
+    //Sets status of the reservation to canceled
+    public void cancelReservation() throws InvalidStatusException {
+
+        Date currentDate = new Date();
+
+        if(this.startDate.after(currentDate)) {
+            this.currentStatus = status.Canceled;
+        }
+        else {
+            throw new InvalidStatusException(this. reservationNumber, " Reservation can't be canceled. Start date has passed");
+        }
     }
+
     //provide UI with ability to output data to the screen
     public String toString(){
         Gson newJsonFile = new Gson();
