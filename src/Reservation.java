@@ -3,7 +3,7 @@ import jdk.jshell.Snippet;
 
 import java.util.Date;
 
-public abstract class Reservation implements Cloneable {
+public abstract class Reservation {
 
     private String accountNumber;
     private final String reservationNumber;
@@ -15,6 +15,8 @@ public abstract class Reservation implements Cloneable {
     private int numberOfBedrooms;
     private Float numberOfBathrooms;
     private int lodgingSize;
+    enum resType {Hotel, Cabin, House}
+    private resType reservationType;
     private enum status { Draft, Completed, Canceled}
     private status currentStatus;
 
@@ -22,7 +24,7 @@ public abstract class Reservation implements Cloneable {
 
     public Reservation(String accountNumber, String reservationNumber, Address physicalAddress, Address mailingAddress,
                        Date startDate, int stayDuration, int numberOfBeds, int numberOfBedrooms,
-                       float numberOfBathrooms, int lodgingSize, String filePath){
+                       float numberOfBathrooms, int lodgingSize, resType reservationType, String filePath){
         this.accountNumber = accountNumber;
         this.reservationNumber = reservationNumber;
         this.physicalAddress = physicalAddress;
@@ -33,6 +35,7 @@ public abstract class Reservation implements Cloneable {
         this.numberOfBedrooms = numberOfBedrooms;
         this.numberOfBathrooms = numberOfBathrooms;
         this.lodgingSize = lodgingSize;
+        this.reservationType = reservationType;
         this.currentStatus = status.Draft;
         this.filePath = filePath;
 
@@ -111,6 +114,8 @@ public abstract class Reservation implements Cloneable {
         return lodgingSize;
     }
 
+    public resType getReservationType() {return reservationType;}
+
     public status getCurrentStatus() {
         return currentStatus;
     }
@@ -151,7 +156,7 @@ public abstract class Reservation implements Cloneable {
 
     public void updateReservation (String accountNumber, String reservationNumber, Date startDate,
                                    int stayDuration, int numberOfBeds, int numberOfBedrooms,
-                                   float numberOfBathrooms, int lodgingSize, String phyStreet,
+                                   float numberOfBathrooms, int lodgingSize, resType reservationType, String phyStreet,
                                    String phyCity, String phyState, String phyZipCode, String phyCountry,
                                    String mailStreet,
                                    String mailCity, String mailState, String mailZipCode, String mailCountry) {
@@ -183,6 +188,7 @@ public abstract class Reservation implements Cloneable {
             if (lodgingSize != -1) {
                 this.setLodgingSize(lodgingSize);
             }
+            this.reservationType = reservationType;
         } catch (ObjectNotFoundException e) {
             throw new ObjectNotFoundException(reservationNumber, "Reservation number does not exist or is incorrect");
         }
@@ -190,13 +196,15 @@ public abstract class Reservation implements Cloneable {
 
 
     //Sets status of the reservation to complete
-    public void completeReservation(){
+    public Reservation completeReservation(){
 
         this.currentStatus = status.Completed;
+
+        return this;
     }
 
     //Sets status of the reservation to canceled
-    public void cancelReservation() throws InvalidStatusException {
+    public Reservation cancelReservation() throws InvalidStatusException {
 
         Date currentDate = new Date();
 
@@ -206,6 +214,7 @@ public abstract class Reservation implements Cloneable {
         else {
             throw new InvalidStatusException(this. reservationNumber, " Reservation can't be canceled. Start date has passed");
         }
+        return this;
     }
 
     //provide UI with ability to output data to the screen

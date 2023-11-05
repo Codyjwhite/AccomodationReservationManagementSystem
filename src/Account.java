@@ -1,9 +1,12 @@
 import com.google.gson.Gson;
 
+import java.beans.Transient;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
@@ -13,10 +16,8 @@ public class Account {
     private Address mailingAddress;
     private String email;
     private String phoneNumber;
-    private List<Reservation> reservationList;
-
     private String filePath;
-
+    private transient Map<String, Reservation> reservationList;
 
     //Variable used to handle the email validation
     private static final String emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$";
@@ -27,7 +28,7 @@ public class Account {
     private static final Pattern phonePatten = Pattern.compile(phoneRegrex);
 
     public Account(String accountNumber, Address mailingAddress, String email, String phoneNumber, String filePath) {
-        this.reservationList = new ArrayList<>();
+        this.reservationList = new HashMap<String, Reservation>();
         this.accountNumber = accountNumber;
         this.mailingAddress = mailingAddress;
         this.filePath = filePath;
@@ -64,7 +65,12 @@ public class Account {
         return phoneNumber;
     }
 
-    public List<Reservation> getReservations() {
+    public  Map<String, Reservation> getReservations() {
+
+        if(reservationList == null) {
+            reservationList = new HashMap<String, Reservation>();
+        }
+
         return reservationList;
     }
 
@@ -103,7 +109,11 @@ public class Account {
     //addReservation adds Reservation to reservationList
     public void addReservation(Reservation reservation){
 
-        this.reservationList.add(reservation);
+        if(reservationList == null) {
+            reservationList = new HashMap<String, Reservation>();
+        }
+
+        this.reservationList.put(reservation.getReservationNumber(), reservation);
 
     }
     public void removeReservation(Reservation reservation) {
@@ -124,7 +134,6 @@ public class Account {
             if (street != null || city != null || state != null || zipCode != null || country != null) {
                 this.mailingAddress.updateAddress(street, city, state, zipCode, country);
             }
-
 
         } catch (ObjectNotFoundException e) {
             throw new ObjectNotFoundException(accountNumber,"account number does not exist or is incorrect");

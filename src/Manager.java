@@ -10,16 +10,20 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
+
+
 
 public class Manager {
 
     private final String directoryPath;
 
-    public enum resType {Hotel, Cabin, House}
+    //public enum resType {Hotel, Cabin, House}
 
-    private Map<String, Account> accountList;
+    public static Map<String, Account> accountList;
 
     public Manager() {
         this.directoryPath = "C:\\Users\\codyj\\OneDrive\\Desktop\\Accommodation_Accounts";
@@ -28,18 +32,29 @@ public class Manager {
 
     public void printAccountList() {
         //TODO Used for testing
-        //Map<String, Account> accountList = testManger.getAccountList();
         for (Map.Entry<String, Account> entry : accountList.entrySet()) {
             String accountNumber = entry.getKey();
             Account currentAccount = entry.getValue();
-            System.out.println(accountNumber);
-            //System.out.println(currentAccount.toString());
-            //System.out.println(currentAccount.getFilePath());
+            System.out.println(accountNumber + "\n");
+            System.out.println(currentAccount.toString() + "\n");
+            printReservation(currentAccount);
+
         }
     }
-    public  Map<String, Account> getAccountList(){
+    public void printReservation(Account account) {
+
+        for (Map.Entry<String, Reservation> entry : account.getReservations().entrySet()) {
+            String reservationNumber = entry.getKey();
+            Reservation reservation = entry.getValue();
+            System.out.println(reservationNumber  + "\n");
+            System.out.println(reservation.toString() + "\n");
+        }
+    }
+
+    public Map<String, Account> getAccountList() {
         return accountList;
     }
+
     //loadAccounts loads in stored data into a HashMap to be used by other methods
     public void loadAccounts() throws IOException {
         //Create a file object using the directoryPath
@@ -55,66 +70,66 @@ public class Manager {
         File[] files = dataFile.listFiles();
         assert files != null;
         for(File accFile :files) {
-           File accountFolder = new File(accFile.getAbsolutePath());
-           File[] accountJson = accountFolder.listFiles((dir, name) -> name.toLowerCase().endsWith(".json"));
-           for(File jsonFile: accountJson) {
-               try (FileReader reader = new FileReader(jsonFile)) {
-                   //Creates Account object with loaded json
-                   Account newAccount = accountGson.fromJson(reader, Account.class);
-                   accountList.put(newAccount.getAccountNumber(), newAccount);
+            File accountFolder = new File(accFile.getAbsolutePath());
+            File[] accountJson = accountFolder.listFiles((dir, name) -> name.toLowerCase().endsWith(".json"));
+            for(File jsonFile: accountJson) {
+                try (FileReader reader = new FileReader(jsonFile)) {
+                    //Creates Account object with loaded json
+                    Account newAccount = accountGson.fromJson(reader, Account.class);
+                    accountList.put(newAccount.getAccountNumber(), newAccount);
 
-                   //Load reservations into account's list
-                   File reservationFolder = new File(accFile, newAccount.getAccountNumber() + "-Reservations");
+                    //Load reservations into account's list
+                    File reservationFolder = new File(accFile, newAccount.getAccountNumber() + "-Reservations");
 
-                   if(reservationFolder.exists() && reservationFolder.isDirectory()) {
+                    if(reservationFolder.exists() && reservationFolder.isDirectory()) {
 
-                       File[] reservationFiles = reservationFolder.listFiles((dir, name) -> name.toLowerCase().endsWith(".json"));
-                       if (reservationFiles != null) {
-                           for (File resFile : reservationFiles) {
+                        File[] reservationFiles = reservationFolder.listFiles((dir, name) -> name.toLowerCase().endsWith(".json"));
+                        if (reservationFiles != null) {
+                            for (File resFile : reservationFiles) {
 
-                               try (FileReader reader1 = new FileReader(resFile)) {
-                                   char resTypeIdent = resFile.getName().charAt(0);
-                                   switch (resTypeIdent) {
-                                       case 'H' -> {
-                                           //Creates a House object from json
-                                           HotelReservation hotelReservation = reservationGson.fromJson(reader1,
-                                                   HotelReservation.class);
-                                           //newAccount.addReservation(hotelReservation);
-                                           newAccount.getReservations().add(hotelReservation);
-                                           break;
+                                try (FileReader resReader = new FileReader(resFile)) {
+                                    char resTypeIdent = resFile.getName().charAt(0);
+                                    switch (resTypeIdent) {
+                                        case 'H' -> {
+                                            //Creates a House object from json
+                                            HotelReservation hotelReservation = reservationGson.fromJson(resReader,
+                                                    HotelReservation.class);
+                                            //newAccount.addReservation(hotelReservation);
+                                            newAccount.getReservations().put(hotelReservation.getReservationNumber(), hotelReservation);
+                                            break;
 
-                                       }
-                                       case 'C' -> {
-                                           //Creates a Cabin object from json
-                                           CabinReservation cabinReservation = reservationGson.fromJson(reader1,
-                                                   CabinReservation.class);
-                                           //newAccount.addReservation(cabinReservation);
-                                           newAccount.getReservations().add(cabinReservation);
-                                           break;
+                                        }
+                                        case 'C' -> {
+                                            //Creates a Cabin object from json
+                                            CabinReservation cabinReservation = reservationGson.fromJson(resReader,
+                                                    CabinReservation.class);
+                                            //newAccount.addReservation(cabinReservation);
+                                            newAccount.getReservations().put(cabinReservation.getReservationNumber(), cabinReservation);
+                                            break;
 
 
-                                       }
-                                       case 'O' -> {
-                                           //Creates a House object from json
-                                           HouseReservation houseReservation = reservationGson.fromJson(reader1,
-                                                   HouseReservation.class);
-                                           //newAccount.addReservation(houseReservation);
-                                           newAccount.getReservations().add(houseReservation);
-                                           break;
+                                        }
+                                        case 'O' -> {
+                                            //Creates a House object from json
+                                            HouseReservation houseReservation = reservationGson.fromJson(resReader,
+                                                    HouseReservation.class);
+                                            //newAccount.addReservation(houseReservation);
+                                            newAccount.getReservations().put(houseReservation.getReservationNumber(), houseReservation);
+                                            break;
 
-                                       }
-                                       default -> {
-                                           throw new IOException();
-                                       }
-                                   }
-                               }
-                           }
-                       }
-                   }
-               } catch (InvalidDirectoryException e) {
-                   throw new InvalidDirectoryException(accFile.getAbsolutePath());
-               }
-           }
+                                        }
+                                        default -> {
+                                            throw new IOException();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } catch (InvalidDirectoryException e) {
+                    throw new InvalidDirectoryException(accFile.getAbsolutePath());
+                }
+            }
         }
     }
 
@@ -153,14 +168,6 @@ public class Manager {
         } catch (IOException e) {
             throw new InvalidDirectoryException(newDirectory);
         }
-        //FIXME delete
-//        for (Map.Entry<String, Account> entry : accountList.entrySet()) {
-//            accountNumber = entry.getKey();
-//            Account currentAccount = entry.getValue();
-//            System.out.println(accountNumber);
-//            System.out.println(currentAccount.toString());
-//            System.out.println(currentAccount.getFilePath());
-//        }
     }
 
     //TODO built for testing not meant for system functionality
@@ -189,6 +196,7 @@ public class Manager {
 
         //Finds and returns account using accountNumber
         Account foundAccount = accountList.get(accountNumber);
+
         if (foundAccount == null) {
             throw new ObjectNotFoundException(accountNumber);
         }
@@ -196,15 +204,15 @@ public class Manager {
     }
 
     private Reservation getReservationByNumber(String accountNumber, String reservationNumber) {
-
         Account resAccount = getAccountByNumber(accountNumber);
 
         //create a list consists of the reservations attached to account
-        List<Reservation> accountReservations = resAccount.getReservations();
+        Map<String, Reservation> accountReservations = resAccount.getReservations();
 
-        for (Reservation res : accountReservations) {
-            if (res.getReservationNumber().equals(reservationNumber)) {
-                return res;
+        for (Map.Entry<String, Reservation> entry : accountReservations.entrySet()) {
+
+            if (entry.getKey().equals(reservationNumber)) {
+                return entry.getValue();
             }
         }
         throw new ObjectNotFoundException(reservationNumber);
@@ -235,13 +243,12 @@ public class Manager {
 
     //addReservationToAccount add a created Reservation object to a specific Account in accountList
     public void addReservationToAccount(String accountNumber, String reservationNumber, Date startDate,
-                                           int strayDuration, int numberOfBeds, int numberOfBedrooms,
-                                           float numberOfBathrooms, int lodgingSize, Boolean hasKitchenette,
-                                           Boolean hasFullKitchen, Boolean hasLoft,int numOfFloors, String phyStreet,
-                                           String phyCity, String phyState, String phyZipCode, String phyCountry,
-                                           String mailStreet,
-                                           String mailCity, String mailState, String mailZipCode, String mailCountry,
-                                           resType resType) throws ObjectNotFoundException, InvalidDirectoryException {
+                                        int strayDuration, int numberOfBeds, int numberOfBedrooms,
+                                        float numberOfBathrooms, int lodgingSize, Reservation.resType reservationType, Boolean hasKitchenette,
+                                        Boolean hasFullKitchen, Boolean hasLoft, int numOfFloors, String phyStreet,
+                                        String phyCity, String phyState, String phyZipCode, String phyCountry,
+                                        String mailStreet,
+                                        String mailCity, String mailState, String mailZipCode, String mailCountry) throws ObjectNotFoundException, InvalidDirectoryException {
 
         // Retrieves account to add reservation to
         Account resAccount;
@@ -252,7 +259,6 @@ public class Manager {
         }
 
         //Creates address objects for reservation creation
-
         //Checks for null and creates mailing address object (Not required for every reservation)
         Address mailAddress = null;
         if (mailStreet != null && mailCity != null && mailState != null && mailZipCode != null
@@ -276,21 +282,21 @@ public class Manager {
         String fileDirectory = directoryPath + "\\" + "Account-" + accountNumber  + "\\" + accountNumber
                 + "-Reservations" + "\\" + reservationNumber + ".json";
 
-        switch (resType) {
+        switch (reservationType) {
 
             case Hotel -> {
                  newRes = new HotelReservation(accountNumber, reservationNumber, mailAddress, phyAddress,
-                        startDate, strayDuration, numberOfBeds, numberOfBedrooms, numberOfBathrooms, lodgingSize, fileDirectory,
+                        startDate, strayDuration, numberOfBeds, numberOfBedrooms, numberOfBathrooms, lodgingSize, reservationType, fileDirectory,
                         hasKitchenette);
             }
             case Cabin -> {
                 newRes = new CabinReservation(accountNumber, reservationNumber, mailAddress, phyAddress,
-                        startDate, strayDuration, numberOfBeds, numberOfBedrooms, numberOfBathrooms, lodgingSize, fileDirectory,
+                        startDate, strayDuration, numberOfBeds, numberOfBedrooms, numberOfBathrooms, lodgingSize, reservationType, fileDirectory,
                         hasFullKitchen, hasLoft);
             }
             case House -> {
                 newRes = new HouseReservation(accountNumber, reservationNumber, mailAddress, phyAddress,
-                        startDate, strayDuration, numberOfBeds, numberOfBedrooms, numberOfBathrooms, lodgingSize, fileDirectory,
+                        startDate, strayDuration, numberOfBeds, numberOfBedrooms, numberOfBathrooms, lodgingSize, reservationType, fileDirectory,
                         numOfFloors);
             }
         }
@@ -315,22 +321,36 @@ public class Manager {
 
 
     //Sets status of the reservation to complete
-    public void completeReservation (String accountNumber, String reservationNumber){
+    public void completeReservation (String accountNumber, String reservationNumber) throws InvalidDirectoryException {
 
         //Account userAccount = getAccountByNumber(accountNumber);
         Reservation userReservation = getReservationByNumber(accountNumber, reservationNumber);
 
-        userReservation.completeReservation();
+        userReservation = userReservation.completeReservation();
+
+        Gson canceledGson = new Gson();
+        try(FileWriter writer = new FileWriter((userReservation.getFilePath()))) {
+            writer.write(canceledGson.toJson(userReservation));
+        } catch (IOException e) {
+            throw new InvalidDirectoryException(userReservation.getFilePath());
+        }
 
         }
 
             //Sets status of the reservation to canceled
-    public void cancelReservation (String accountNumber, String reservationNumber){
+    public void cancelReservation (String accountNumber, String reservationNumber) throws InvalidDirectoryException {
 
         //Account userAccount = getAccountByNumber(accountNumber);
         Reservation userReservation = getReservationByNumber(accountNumber, reservationNumber);
 
-        userReservation.cancelReservation();
+        userReservation = userReservation.cancelReservation();
+
+        Gson canceledGson = new Gson();
+        try(FileWriter writer = new FileWriter((userReservation.getFilePath()))) {
+            writer.write(canceledGson.toJson(userReservation));
+        } catch (IOException e) {
+            throw new InvalidDirectoryException(userReservation.getFilePath());
+        }
 
     }
 
@@ -345,24 +365,25 @@ public class Manager {
 
         try {
             Reservation userReservation = getReservationByNumber(accountNumber, reservationNumber);
-
-            char resTypeIdent = reservationNumber.charAt(0);
-            switch (resTypeIdent) {
-                case 'H' -> {
+            System.out.println(userReservation.getReservationNumber());
+            Reservation.resType reservationType = userReservation.getReservationType();
+            System.out.println(userReservation.toString());
+            switch (reservationType) {
+                case Hotel -> {
                     ((HotelReservation) userReservation).updateReservation(accountNumber, reservationNumber, startDate, stayDuration, numberOfBeds, numberOfBedrooms,
-                            numberOfBathrooms, lodgingSize, phyStreet, phyCity, phyState, phyZipCode, phyCountry, mailStreet,
+                            numberOfBathrooms, lodgingSize, reservationType, phyStreet, phyCity, phyState, phyZipCode, phyCountry, mailStreet,
                             mailCity, mailState, mailZipCode, mailCountry, updateHasKitchenette);
                 }
 
-                case 'C' -> {
+                case Cabin -> {
                     ((CabinReservation) userReservation).updateReservation(accountNumber, reservationNumber, startDate, stayDuration, numberOfBeds, numberOfBedrooms,
-                            numberOfBathrooms, lodgingSize, phyStreet, phyCity, phyState, phyZipCode, phyCountry, mailStreet,
+                            numberOfBathrooms, lodgingSize, reservationType, phyStreet, phyCity, phyState, phyZipCode, phyCountry, mailStreet,
                             mailCity, mailState, mailZipCode, mailCountry, updateHasFullKitchen, updateHasLoft);
                 }
 
-                case 'O' -> {
+                case House -> {
                     ((HouseReservation) userReservation).updateReservation(accountNumber, reservationNumber, startDate, stayDuration, numberOfBeds, numberOfBedrooms,
-                            numberOfBathrooms, lodgingSize, phyStreet, phyCity, phyState, phyZipCode, phyCountry, mailStreet,
+                            numberOfBathrooms, lodgingSize, reservationType, phyStreet, phyCity, phyState, phyZipCode, phyCountry, mailStreet,
                             mailCity, mailState, mailZipCode, mailCountry, numOfFloors);
                 }
 
@@ -384,7 +405,7 @@ public class Manager {
         //returns a double representing a Reservation's cost per night
     public Double pricePerNight (String accountNumber, String reservationNumber){
 
-        //Account userAccount = getAccountByNumber(accountNumber);
+
         Reservation userReservation = getReservationByNumber(accountNumber, reservationNumber);
 
 
@@ -394,12 +415,10 @@ public class Manager {
             //returns a double representing a Reservation's total cost
     public Double TotalPrice (String accountNumber, String reservationNumber){
 
-        //Account userAccount = getAccountByNumber(accountNumber);
+
         Reservation userReservation = getReservationByNumber(accountNumber, reservationNumber);
 
         return userReservation.TotalPrice();
             }
 
         }
-
-

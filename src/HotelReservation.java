@@ -8,9 +8,9 @@ public class HotelReservation extends Reservation {
 
     public HotelReservation(String accountNumber, String reservationNumber, Address physicalAddress, Address mailingAddress,
                             Date startDate, int stayDuration, int numberOfBeds, int numberOfBedrooms,
-                            float numberOfBathrooms, int lodgingSize, String filePath, Boolean hasKitchenette) {
+                            float numberOfBathrooms, int lodgingSize, resType reservationType, String filePath, Boolean hasKitchenette) {
         super(accountNumber, reservationNumber, physicalAddress, mailingAddress, startDate,
-                stayDuration, numberOfBeds, numberOfBedrooms, numberOfBathrooms, lodgingSize, filePath);
+                stayDuration, numberOfBeds, numberOfBedrooms, numberOfBathrooms, lodgingSize, reservationType, filePath);
 
         this.hasKitchenette = hasKitchenette;
         this.setNumberOfBedrooms(1);
@@ -33,7 +33,7 @@ public class HotelReservation extends Reservation {
 
     public void updateReservation (String accountNumber, String reservationNumber, Date startDate,
                                    int stayDuration, int numberOfBeds, int numberOfBedrooms,
-                                   float numberOfBathrooms, int lodgingSize, String phyStreet,
+                                   float numberOfBathrooms, int lodgingSize, resType reservationType, String phyStreet,
                                    String phyCity, String phyState, String phyZipCode, String phyCountry,
                                    String mailStreet,
                                    String mailCity, String mailState, String mailZipCode, String mailCountry,
@@ -41,7 +41,7 @@ public class HotelReservation extends Reservation {
 
         //Calls parent method for shared attributes
         super.updateReservation(accountNumber,reservationNumber,startDate, stayDuration, numberOfBeds, numberOfBedrooms,
-                numberOfBathrooms,lodgingSize,phyStreet,phyCity,phyState,phyZipCode,phyCountry,mailStreet,
+                numberOfBathrooms,lodgingSize, reservationType, phyStreet,phyCity,phyState,phyZipCode,phyCountry,mailStreet,
                 mailCity, mailState, mailZipCode, mailCountry);
 
         //Unique attributes
@@ -49,12 +49,6 @@ public class HotelReservation extends Reservation {
             this.hasKitchenette = !hasKitchenette;
         }
 
-    }
-
-    @Override
-    public HotelReservation clone() {
-        //return super.clone();
-        return null;
     }
 
     public void setHasKitchenette(Boolean hasKitchenette) {

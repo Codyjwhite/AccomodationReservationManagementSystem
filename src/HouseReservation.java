@@ -8,9 +8,9 @@ public class HouseReservation extends Reservation {
 
     public HouseReservation(String accountNumber, String reservationNumber, Address physicalAddress, Address mailingAddress,
                             Date startDate, int stayDuration, int numberOfBeds, int numberOfBedrooms,
-                            float numberOfBathrooms, int lodgingSize, String filePath, int numOfFloors) {
+                            float numberOfBathrooms, int lodgingSize, resType reservationType, String filePath, int numOfFloors) {
         super(accountNumber, reservationNumber, physicalAddress, mailingAddress, startDate,
-                stayDuration, numberOfBeds, numberOfBedrooms, numberOfBathrooms, lodgingSize, filePath);
+                stayDuration, numberOfBeds, numberOfBedrooms, numberOfBathrooms, lodgingSize, reservationType, filePath);
 
         this.numOfFloors = numOfFloors;
 
@@ -25,26 +25,20 @@ public class HouseReservation extends Reservation {
 
     public void updateReservation (String accountNumber, String reservationNumber, Date startDate,
                                    int stayDuration, int numberOfBeds, int numberOfBedrooms,
-                                   float numberOfBathrooms, int lodgingSize, String phyStreet,
+                                   float numberOfBathrooms, int lodgingSize, resType reservationType, String phyStreet,
                                    String phyCity, String phyState, String phyZipCode, String phyCountry,
                                    String mailStreet,
                                    String mailCity, String mailState, String mailZipCode, String mailCountry,
                                    int numOfFloors) {
         //Calls parent method for shared attributes
         super.updateReservation(accountNumber,reservationNumber,startDate, stayDuration, numberOfBeds, numberOfBedrooms,
-                numberOfBathrooms,lodgingSize,phyStreet,phyCity,phyState,phyZipCode,phyCountry,mailStreet,
+                numberOfBathrooms,lodgingSize, reservationType, phyStreet,phyCity,phyState,phyZipCode,phyCountry,mailStreet,
                 mailCity, mailState, mailZipCode, mailCountry);
 
         //Unique attributes
         if (numOfFloors != -1) {
             this.numOfFloors = numOfFloors;
         }
-    }
-
-    @Override
-    public Reservation clone(){
-        //return super.clone();
-        return null;
     }
 
     public void setNumOfFloors(int numOfFloors) {

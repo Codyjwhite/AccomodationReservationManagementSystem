@@ -9,10 +9,10 @@ public class CabinReservation extends Reservation {
 
     public CabinReservation(String accountNumber, String reservationNumber, Address physicalAddress, Address mailingAddress,
                             Date startDate, int stayDuration, int numberOfBeds, int numberOfBedrooms,
-                            float numberOfBathrooms, int lodgingSize, String filePath, Boolean hasFullKitchen, Boolean hasLoft) {
+                            float numberOfBathrooms, int lodgingSize, resType reservationType, String filePath, Boolean hasFullKitchen, Boolean hasLoft) {
 
         super(accountNumber, reservationNumber, physicalAddress, mailingAddress, startDate,
-                stayDuration, numberOfBeds, numberOfBedrooms, numberOfBathrooms, lodgingSize, filePath);
+                stayDuration, numberOfBeds, numberOfBedrooms, numberOfBathrooms, lodgingSize, reservationType, filePath);
         this.hasFullKitchen = hasFullKitchen;
         this.hasLoft = hasLoft;
 
@@ -37,23 +37,17 @@ public class CabinReservation extends Reservation {
         return basePrice;
     }
 
-    @Override
-    public CabinReservation clone(){
-        //return super.clone();
-        return null;
-    }
-
 
     public void updateReservation (String accountNumber, String reservationNumber, Date startDate,
                                    int stayDuration, int numberOfBeds, int numberOfBedrooms,
-                                   float numberOfBathrooms, int lodgingSize, String phyStreet,
+                                   float numberOfBathrooms, int lodgingSize, resType reservationType, String phyStreet,
                                    String phyCity, String phyState, String phyZipCode, String phyCountry,
                                    String mailStreet,
                                    String mailCity, String mailState, String mailZipCode, String mailCountry,
                                    boolean updateHasFullKitchen, boolean updateHasLoft) {
         //Calls parent method for shared attributes
         super.updateReservation(accountNumber,reservationNumber,startDate, stayDuration, numberOfBeds, numberOfBedrooms,
-                numberOfBathrooms,lodgingSize,phyStreet,phyCity,phyState,phyZipCode,phyCountry,mailStreet,
+                numberOfBathrooms,lodgingSize,reservationType, phyStreet,phyCity,phyState,phyZipCode,phyCountry,mailStreet,
                 mailCity, mailState, mailZipCode, mailCountry);
 
         //Unique attributes
